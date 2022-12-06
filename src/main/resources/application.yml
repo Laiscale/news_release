@@ -6,4 +6,5 @@ spring:
       username: root
       password: 991621
 mybatis-plus:
-  map-underscore-to-camel-case: true
+  configuration:
+    map-underscore-to-camel-case: true

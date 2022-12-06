@@ -61,6 +61,11 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.15</version>
         </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.7.3</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>joda-time</groupId>-->
 <!--            <artifactId>joda-time</artifactId>-->
