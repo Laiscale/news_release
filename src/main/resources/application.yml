@@ -2,9 +2,9 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/news_release
+      url: jdbc:mysql://8.134.87.155:3306/news_release
       username: root
-      password: 991621
+      password: 123456
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

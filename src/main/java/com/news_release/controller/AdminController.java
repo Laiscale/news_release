@@ -7,7 +7,11 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.news_release.config.Result;
 import com.news_release.enity.Admin;
+import com.news_release.enity.Article;
+import com.news_release.enity.ArticleComment;
 import com.news_release.enity.User;
+import com.news_release.mapper.ArticleCommentMapper;
+import com.news_release.mapper.ArticleMapper;
 import com.news_release.mapper.UserMapper;
 import com.news_release.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +27,12 @@ public class AdminController {
 
     @Autowired
     AdminService adminService;
-
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    ArticleMapper articleMapper;
+    @Autowired
+    ArticleCommentMapper articleCommentMapper;
 
     //登录返回结果接口
     @PostMapping("/login")
@@ -38,7 +45,7 @@ public class AdminController {
         return Result.success(admin);
     }
 
-    //用户分页结果以及模糊查询nickname接口
+    //用户列表分页结果以及模糊查询nickname接口
     @GetMapping("/userList")
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "5") Integer pageSize,
@@ -71,6 +78,19 @@ public class AdminController {
         return Result.success(deleteUserList);
     }
 
+    //文章列表分页结果 接口(通过title查询)
+    @GetMapping("/articleList")
+    public Result<?> articleList(@RequestParam(defaultValue = "1") Integer pageNum,
+                                 @RequestParam(defaultValue = "5") Integer pageSize,
+                                 @RequestParam(defaultValue = "") String search) {
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        if(StrUtil.isNotBlank(search)) {
+            wrapper.like(Article::getTitle, search);
+        }
+        Page<Article> articlePage = articleMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return Result.success(articlePage);
+    }
+
     //删除单个文章(根据joke_id)结果接口
     @DeleteMapping("/delete/article")
     public Result<?> deleteArticle(@RequestParam("jokeId") String jokeId) {
@@ -89,6 +109,20 @@ public class AdminController {
             return Result.error("400", "请求失败");
         }
         return Result.success(deleteArticleList);
+    }
+
+
+    //评论列表分页结果 接口(通过comemnt_id查询)
+    @GetMapping("/commentList")
+    public Result<?> commentList(@RequestParam(defaultValue = "1") Integer pageNum,
+                                 @RequestParam(defaultValue = "5") Integer pageSize,
+                                 @RequestParam(defaultValue = "") String search) {
+        LambdaQueryWrapper<ArticleComment> wrapper = new LambdaQueryWrapper<>();
+        if(StrUtil.isNotBlank(search)) {
+            wrapper.like(ArticleComment::getCommentId, search);
+        }
+        Page<ArticleComment> articleCommentPage = articleCommentMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        return Result.success(articleCommentPage);
     }
 
     //删除单个评论(根据joke_id)结果接口

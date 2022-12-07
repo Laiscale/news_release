@@ -17,6 +17,6 @@ public class ArticleComment {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date commentDate;
 
-    private String commentNick;
-    private String commentIcon;
+//    private String commentNick;
+//    private String commentIcon;
 }

@@ -21,14 +21,14 @@ public class Article {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date postTime;
 
-    private int articleLikeCount;
-    private int articleCommentCount;
+    private int artLikeCount;
+    private int artCommentCount;
     private String category;
     private String tags;
 
-    private String jokeUserNick;
-    private String jokeUserIcon;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date selfApprovalTime;
+//    private String jokeUserNick;
+//    private String jokeUserIcon;
+//
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+//    private Date selfApprovalTime;
 }
