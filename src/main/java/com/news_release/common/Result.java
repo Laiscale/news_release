@@ -1,4 +1,4 @@
-package com.news_release.config;
+package com.news_release.common;
 
 import lombok.Data;
 

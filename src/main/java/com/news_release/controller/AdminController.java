@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.news_release.config.Result;
+import com.news_release.common.Result;
 import com.news_release.enity.Admin;
 import com.news_release.enity.Article;
 import com.news_release.enity.ArticleComment;
