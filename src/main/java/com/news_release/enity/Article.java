@@ -15,6 +15,7 @@ public class Article {
     private String jokeUserId;
     private String title;
     private String content;
+    private int status;
     private String contentHtml;
     private String coverImg;
 
