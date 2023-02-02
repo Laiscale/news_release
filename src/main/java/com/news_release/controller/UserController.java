@@ -2,6 +2,7 @@ package com.news_release.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -37,21 +38,24 @@ public class UserController {
     @Autowired
     ArticleLikeMapper articleLikeMapper;
 
-    //用户点赞，用于点赞数据显示
-    @PostMapping("/user_like")
-    public Result<?> userLike(@RequestParam String joke_id){
-        int like_count = 0;
-        return Result.success("ss");
+    //用户点赞,用于显示一篇文章的点赞数（不懂是不是这个意思）
+    @PostMapping("/userlike")
+    public Result<?> userLike(@RequestParam String jokeId){
+        QueryWrapper<ArticleLike> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("joke_id",jokeId);
+        Integer count = articleLikeMapper.selectCount(queryWrapper);
+        String ss = count.toString();
+        return Result.success(ss);
     }
 
-    //用户点赞列表展示
+    //用户点赞列表展示（可输入用户的user_id，由于user表和articlelike表的userid差的远，做了各总展示）
     @GetMapping("/userlikelist")
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "5") Integer pageSize,
                               @RequestParam(defaultValue = "") String search) {
         LambdaQueryWrapper<ArticleLike> wrapper = Wrappers.<ArticleLike>lambdaQuery();
         if(StrUtil.isNotBlank(search)) {
-            wrapper.like(ArticleLike::getJokeId, search);
+            wrapper.like(ArticleLike::getJokeUserId, search);
         }
         IPage<ArticleLike> articleLikeIPage = articleLikeMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(articleLikeIPage);
