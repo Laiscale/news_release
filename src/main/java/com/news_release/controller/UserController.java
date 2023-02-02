@@ -45,7 +45,7 @@ public class UserController {
     }
 
     //用户点赞列表展示
-    @GetMapping("/UserLikeList")
+    @GetMapping("/userlikelist")
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "5") Integer pageSize,
                               @RequestParam(defaultValue = "") String search) {
