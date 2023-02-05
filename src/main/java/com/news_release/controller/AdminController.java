@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.news_release.config.Result;
+import com.news_release.common.Result;
 import com.news_release.enity.Admin;
 import com.news_release.enity.Article;
 import com.news_release.enity.ArticleComment;
@@ -14,6 +14,7 @@ import com.news_release.mapper.ArticleCommentMapper;
 import com.news_release.mapper.ArticleMapper;
 import com.news_release.mapper.UserMapper;
 import com.news_release.service.AdminService;
+import com.news_release.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,8 @@ public class AdminController {
 
     @Autowired
     AdminService adminService;
+    @Autowired
+    ArticleService articleService;
     @Autowired
     UserMapper userMapper;
     @Autowired
@@ -78,17 +81,34 @@ public class AdminController {
         return Result.success(deleteUserList);
     }
 
-    //文章列表分页结果 接口(通过title查询)
+    //文章待审核列表分页结果 接口(通过title查询)
     @GetMapping("/articleList")
     public Result<?> articleList(@RequestParam(defaultValue = "1") Integer pageNum,
                                  @RequestParam(defaultValue = "5") Integer pageSize,
                                  @RequestParam(defaultValue = "") String search) {
-        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
-        if(StrUtil.isNotBlank(search)) {
-            wrapper.like(Article::getTitle, search);
-        }
-        Page<Article> articlePage = articleMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
-        return Result.success(articlePage);
+//        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+//        wrapper.like(search != null, Article::getTitle, search);
+//        Page<Article> articlePage = articleMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        IPage<Article> PageStatus = articleService.findAllByStatus(pageNum, pageSize, search);
+        return Result.success(PageStatus);
+    }
+
+    //文章审核通过
+    @PostMapping("/permit")
+    public Result<?> permitpage(@RequestParam("id") int id) {
+        Article article = articleService.getById(id);
+        article.setStatus(2);
+        boolean flag = articleService.updateById(article);
+        return Result.success(flag);
+    }
+
+    //文章审核否决
+    @PostMapping("/deny")
+    public Result<?> denypage(@RequestParam("id") int id) {
+        Article article = articleService.getById(id);
+        article.setStatus(3);
+        boolean flag = articleService.updateById(article);
+        return Result.success(flag);
     }
 
     //删除单个文章(根据joke_id)结果接口
