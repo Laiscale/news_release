@@ -23,7 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 @Slf4j
 @RestController
@@ -87,8 +90,8 @@ public class UserController {
 
     //用户个人信息修改
     @PostMapping("/userUpdate")
-    public Result<?> userUpdate(@RequestParam int id, String name,String password,String nickname,
-                                String user_icon,String talk,String address) {
+    public Result<?> userUpdate(@RequestParam int id,@RequestParam String name,@RequestParam String password,@RequestParam String nickname,
+                                @RequestParam String user_icon,@RequestParam String talk,@RequestParam String address) {
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         User user =new User();
         updateWrapper.eq("id",id);
@@ -101,5 +104,60 @@ public class UserController {
         userMapper.update(user,updateWrapper);
         Integer rows = userMapper.update(user, updateWrapper);
         return Result.success(rows);
+    }
+    @PostMapping("/userLogin")
+    public Result<?> userLogin(@RequestParam String name,@RequestParam String password){
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("name",name);
+        User user = userMapper.selectOne(updateWrapper);
+        if(user == null){
+            return Result.error("0","用户名不存在");
+        } else if (Objects.equals(password, user.getPassword())){
+            user.setIsLogin(1);
+            user.setLastLoginTime(new Date());
+            userMapper.update(user, updateWrapper);
+            return Result.success("登录成功");
+        } else {
+            return Result.error("0","密码错误");
+        }
+    }
+    @GetMapping("/userLoginOut")
+    public Result<?> userLoginOut(@RequestParam String name){
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("name",name);
+        User user = userMapper.selectOne(updateWrapper);
+        if(user.getIsLogin() == 0){
+            return Result.error("0","无效退出登录");
+        }
+        user.setIsLogin(0);
+        userMapper.update(user,updateWrapper);
+        return Result.success("退出登录成功");
+    }
+    @PostMapping("/userRegistered")
+    public Result<?> userRegistered(@RequestParam String name,
+                                    @RequestParam String password,
+                                    @RequestParam String nickname,
+                                    @RequestParam(defaultValue = "") String user_icon,
+                                    @RequestParam(defaultValue = "") String talk,
+                                    @RequestParam(defaultValue = "") String address) {
+        User user = new User();
+        QueryWrapper<User> queryWrapper = new QueryWrapper();
+        user.setName(name);
+        queryWrapper.eq("name",name);
+        user.setPassword(password);
+        user.setNickname(nickname);
+        user.setUserIcon(user_icon);
+        user.setTalk(talk);
+        user.setAddress(address);
+        user.setRegistTime(new Date());
+        Random myRandow = new Random(123456);
+        user.setUserId(Objects.toString(myRandow.nextInt()));
+        User use = userMapper.selectOne(queryWrapper);
+        if(use == null){
+            userMapper.insert(user);
+            return Result.success("注册成功");
+        } else {
+            return Result.error("0","用户名重复");
+        }
     }
 }
