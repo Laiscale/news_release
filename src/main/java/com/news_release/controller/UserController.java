@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,9 +21,12 @@ import com.news_release.mapper.ArticleMapper;
 import com.news_release.mapper.UserMapper;
 import com.news_release.service.AdminService;
 import com.news_release.service.ArticleService;
+import com.news_release.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -40,12 +44,14 @@ public class UserController {
     ArticleCommentMapper articleCommentMapper;
     @Autowired
     ArticleLikeMapper articleLikeMapper;
+    @Autowired(required = false)
+    UserService userService;
 
     //用户点赞,用于显示一篇文章的点赞数（不懂是不是这个意思）
     @PostMapping("/userlike")
-    public Result<?> userLike(@RequestParam String jokeId){
+    public Result<?> userLike(@RequestParam String jokeId) {
         QueryWrapper<ArticleLike> queryWrapper = new QueryWrapper();
-        queryWrapper.eq("joke_id",jokeId);
+        queryWrapper.eq("joke_id", jokeId);
         Integer count = articleLikeMapper.selectCount(queryWrapper);
         String ss = count.toString();
         return Result.success(ss);
@@ -57,11 +63,46 @@ public class UserController {
                               @RequestParam(defaultValue = "5") Integer pageSize,
                               @RequestParam(defaultValue = "") String search) {
         LambdaQueryWrapper<ArticleLike> wrapper = Wrappers.<ArticleLike>lambdaQuery();
-        if(StrUtil.isNotBlank(search)) {
+        if (StrUtil.isNotBlank(search)) {
             wrapper.like(ArticleLike::getJokeUserId, search);
         }
         IPage<ArticleLike> articleLikeIPage = articleLikeMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(articleLikeIPage);
     }
 
+    //用户查看自己所发布的文章
+    @GetMapping("/userJoke")
+    public Result<?> userJoke(@RequestParam String jokeUserId) {
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Article::getJokeUserId, jokeUserId);
+        List<Article> articles = articleMapper.selectList(wrapper);
+        return Result.success(articles);
+    }
+
+    //查询用户所有信息
+    @GetMapping("/userInfo")
+    public Result<?> userInfo(@RequestParam String userId){
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getId,userId);
+        List<User> info = userMapper.selectList(wrapper);
+        return Result.success(info);
+    }
+
+    //用户个人信息修改
+    @PostMapping("/userUpdate")
+    public Result<?> userUpdate(@RequestParam int id, String name,String password,String nickname,
+                                String user_icon,String talk,String address) {
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        User user =new User();
+        updateWrapper.eq("id",id);
+        user.setName(name);
+        user.setPassword(password);
+        user.setNickname(nickname);
+        user.setUserIcon(user_icon);
+        user.setTalk(talk);
+        user.setAddress(address);
+        userMapper.update(user,updateWrapper);
+        Integer rows = userMapper.update(user, updateWrapper);
+        return Result.success(rows);
+    }
 }

@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/article")
@@ -47,5 +49,14 @@ public class ArticleController {
         }
         IPage<Article> articleDetailIPage = articleMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(articleDetailIPage);
+    }
+
+    //首页搜索功能，搜索结果可以按需修改
+    @GetMapping("/search")
+    public Result<?> findArticles(@RequestParam String words){
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(Article::getTitle,words);
+        List<Article> articles = articleMapper.selectList(wrapper);
+        return Result.success(articles);
     }
 }
