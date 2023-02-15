@@ -1,5 +1,6 @@
 package com.news_release.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.news_release.common.Result;
 import com.news_release.enity.ArticleComment;
 import com.news_release.mapper.ArticleCommentMapper;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 @Slf4j
 @RestController
@@ -37,8 +40,9 @@ public class ArticleCommentController {
 
     @PostMapping("/comment")
     public Result<?> addComment(ArticleComment articleComment){
-
-        articleCommentMapper.insert(articleComment);
-        return Result.success(articleComment);
+            Date date = new Date();
+            articleComment.setCommentDate(date);
+            articleCommentMapper.insert(articleComment);
+            return Result.success(articleComment);
     }
 }
