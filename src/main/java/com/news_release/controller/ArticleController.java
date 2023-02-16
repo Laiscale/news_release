@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.news_release.common.Result;
 import com.news_release.enity.Article;
 import com.news_release.enity.ArticleLike;
+import com.news_release.enity.User;
 import com.news_release.mapper.ArticleCommentMapper;
 import com.news_release.mapper.ArticleLikeMapper;
 import com.news_release.mapper.ArticleMapper;
@@ -19,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -59,4 +62,15 @@ public class ArticleController {
         List<Article> articles = articleMapper.selectList(wrapper);
         return Result.success(articles);
     }
+
+    //文章发布
+    @PostMapping("/release")
+    public Result<?> releaseArticles(@RequestBody Article article){
+        article.setPostTime(LocalDateTime.now());
+        article.setStatus(1);
+        articleService.save(article);
+        return Result.success("发布成功");
+    }
 }
+
+
