@@ -40,6 +40,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         return getOne(wrapper);
     }
 
+
     @Override
     public int deleteUser(String user_id) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();

@@ -7,6 +7,7 @@ import com.news_release.mapper.ArticleMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
@@ -21,6 +22,12 @@ class NewsReleaseApplicationTests {
         qw.eq(Article::getStatus, 1);
         List<Article> uncheckarticle = articleMapper.selectList(qw);
         System.out.println(uncheckarticle);
+    }
+
+    @Test
+    public void test() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        System.out.println(encoder.encode("123456"));
     }
 
 

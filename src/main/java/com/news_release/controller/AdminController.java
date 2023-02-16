@@ -48,6 +48,8 @@ public class AdminController {
         return Result.success(admin);
     }
 
+
+
     //用户列表分页结果以及模糊查询nickname接口
     @GetMapping("/userList")
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
@@ -94,8 +96,8 @@ public class AdminController {
     }
 
     //文章审核通过
-    @PostMapping("/permit")
-    public Result<?> permitpage(@RequestParam("id") int id) {
+    @PostMapping("/permit/{id}")
+    public Result<?> permitpage(@PathVariable int id) {
         Article article = articleService.getById(id);
         article.setStatus(2);
         boolean flag = articleService.updateById(article);
@@ -103,8 +105,8 @@ public class AdminController {
     }
 
     //文章审核否决
-    @PostMapping("/deny")
-    public Result<?> denypage(@RequestParam("id") int id) {
+    @PostMapping("/deny/{id}")
+    public Result<?> denypage(@PathVariable int id) {
         Article article = articleService.getById(id);
         article.setStatus(3);
         boolean flag = articleService.updateById(article);
@@ -139,7 +141,8 @@ public class AdminController {
                                  @RequestParam(defaultValue = "") String search) {
         LambdaQueryWrapper<ArticleComment> wrapper = new LambdaQueryWrapper<>();
         if(StrUtil.isNotBlank(search)) {
-            wrapper.like(ArticleComment::getCommentId, search);
+            wrapper.like(ArticleComment::getCommentId, search)
+                    .orderByAsc(ArticleComment::getJokeId);
         }
         Page<ArticleComment> articleCommentPage = articleCommentMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         return Result.success(articleCommentPage);

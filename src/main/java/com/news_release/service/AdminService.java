@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.news_release.enity.Admin;
 import com.news_release.enity.Article;
+import com.news_release.enity.User;
 
 import java.util.List;
 
 public interface AdminService extends IService<Admin> {
 
     Admin loginResult(String name, String password);
+
     int deleteUser(String user_id);
     int deleteUserList(List<String> user_ids);
     int deleteArticle(String joke_id);
