@@ -3,6 +3,7 @@ package com.news_release.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -102,7 +103,12 @@ public class ArticleController {
         updateWrapper.eq("joke_id",jokeid);
         updateWrapper.setSql("art_like_count=art_like_count+"+1);
         articleMapper.update(null,updateWrapper);
-        return Result.success("点赞成功");
+
+        QueryWrapper<ArticleLike> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("joke_id", jokeid);
+        Integer count = articleLikeMapper.selectCount(queryWrapper);
+        String ss = count.toString();
+        return Result.success(ss);
     }
 }
 

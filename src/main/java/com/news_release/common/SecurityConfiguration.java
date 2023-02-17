@@ -62,7 +62,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/register",
                         "/article/search",
                         "/article/release",
-                        "/user/userlike").permitAll()    //静态资源，使用permitAll
+                        "/user/userlike",
+                        "/article/jokedetail",
+                        "/article/addlike").permitAll()    //静态资源，使用permitAll
                 // 来运行任何人访问（注意一定要放在前面）
                 .antMatchers("/user/**").hasAnyRole("user", "admin")
                 .antMatchers("/admin/**").hasRole("admin")
