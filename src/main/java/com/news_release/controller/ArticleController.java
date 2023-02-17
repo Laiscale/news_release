@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 @Slf4j
 @RestController
@@ -66,9 +68,11 @@ public class ArticleController {
 
     //文章发布
     @PostMapping("/release")
-    public Result<?> releaseArticles(@RequestBody Article article){
+    public Result<?> releaseArticles(Article article){
         article.setPostTime(LocalDateTime.now());
         article.setStatus(1);
+        Random jokeId = new Random(123456);
+        article.setJokeId(Objects.toString(jokeId.nextInt()));
         articleService.save(article);
         return Result.success("发布成功");
     }
