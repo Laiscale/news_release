@@ -3,6 +3,7 @@ package com.news_release.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,6 +16,7 @@ import com.news_release.mapper.ArticleLikeMapper;
 import com.news_release.mapper.ArticleMapper;
 import com.news_release.mapper.UserMapper;
 import com.news_release.service.AdminService;
+import com.news_release.service.ArticleLikeService;
 import com.news_release.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,17 @@ public class ArticleController {
     ArticleCommentMapper articleCommentMapper;
     @Autowired
     ArticleLikeMapper articleLikeMapper;
+    @Autowired
+    ArticleLikeService articleLikeService;
+
+    //文章详情列表-单篇展示
+    @GetMapping("/jokedetail")
+    public Result<?> jokedetail(@RequestParam String jokeid){
+        LambdaQueryWrapper<Article> wrapper = Wrappers.lambdaQuery();
+        wrapper.like(Article::getJokeId,jokeid);
+        List<Article> articles = articleMapper.selectList(wrapper);
+        return Result.success(articles);
+    }
 
     //文章详情列表展示
     @GetMapping("/jokedetaillist")
@@ -77,13 +90,19 @@ public class ArticleController {
         return Result.success("发布成功");
     }
 
-    //首页新闻列表
-    @GetMapping("/getnews")
-    public Result<?> getnews(){
-        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Article::getStatus,3);
-        List<Article> articles = articleMapper.selectList(wrapper);
-        return Result.success(articles);
+
+    @PostMapping("/addlike")
+    public  Result<?> addLike(@RequestParam String jokeid,  @RequestParam String jokeuserid){
+        ArticleLike articleLike = new ArticleLike();
+        articleLike.setJokeId(jokeid);
+        articleLike.setJokeUserId(jokeuserid);
+        articleLike.setApprovalTime(LocalDateTime.now());
+        articleLikeService.save(articleLike);
+        UpdateWrapper<Article> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("joke_id",jokeid);
+        updateWrapper.setSql("art_like_count=art_like_count+"+1);
+        articleMapper.update(null,updateWrapper);
+        return Result.success("点赞成功");
     }
 }
 
