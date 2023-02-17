@@ -34,18 +34,44 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     UserMapper mapper;
 
+//    @Resource
+//    PersistentTokenRepository repository;
+
+    //将cookie存在数据库的配置
+//    @Bean
+//    public PersistentTokenRepository jdbcRepository(@Autowired DataSource dataSource) {
+//        JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
+//        repository.setDataSource(dataSource);
+//        //项目第一次启动时会在数据库中创建一张表来存储cookie，但是之后再启动项目时需要注释掉或者将true改为false
+//        repository.setCreateTableOnStartup(false);
+//        return repository;
+//    }
+
     //权限赋予
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()   //首先需要配置哪些请求会被拦截，哪些请求必须具有什么角色才能访问
-                .antMatchers("/static/**", "/logins", "/loginout", "/register","/article/**").permitAll()
-                //静态资源，使用permitAll
+                .antMatchers(
+                        "/static/**",
+                        "/logins",
+                        "/loginout",
+                        "/register",
+                        "/article/jokedetaillist",
+                        "/article/commentAdd",
+                        "/register",
+                        "/article/search",
+                        "/article/release",
+                        "/user/userlike",
+                        "/article/jokedetail",
+                        "/article/addlike").permitAll()    //静态资源，使用permitAll
                 // 来运行任何人访问（注意一定要放在前面）
                 .antMatchers("/user/**").hasAnyRole("user", "admin")
                 .antMatchers("/admin/**").hasRole("admin")
-                .anyRequest().hasAnyRole()
+                .anyRequest().hasAnyRole()     //所有请求必须登陆并且是user,admin角色才可以访问（不包含上面的静态资源）
                 .and()
+                .formLogin().disable()
+                .logout().disable()
                 .csrf().disable();
     }
 

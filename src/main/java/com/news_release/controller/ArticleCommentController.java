@@ -12,15 +12,13 @@ import com.news_release.service.ArticleCommentService;
 import com.news_release.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/article")
 public class ArticleCommentController {
     @Autowired
@@ -38,10 +36,11 @@ public class ArticleCommentController {
     @Autowired
     ArticleLikeMapper articleLikeMapper;
 
-    @PostMapping("/comment")
+    @PostMapping("/commentAdd")
     public Result<?> addComment(ArticleComment articleComment){
             Date date = new Date();
             articleComment.setCommentDate(date);
+            articleComment.setCommentId("2");
             articleCommentMapper.insert(articleComment);
             return Result.success(articleComment);
     }
