@@ -15,6 +15,7 @@ import com.news_release.mapper.ArticleLikeMapper;
 import com.news_release.mapper.ArticleMapper;
 import com.news_release.mapper.UserMapper;
 import com.news_release.service.AdminService;
+import com.news_release.service.ArticleLikeService;
 import com.news_release.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ public class ArticleController {
     ArticleCommentMapper articleCommentMapper;
     @Autowired
     ArticleLikeMapper articleLikeMapper;
+    @Autowired
+    ArticleLikeService articleLikeService;
 
     //文章详情列表展示
     @GetMapping("/jokedetaillist")
@@ -75,6 +78,17 @@ public class ArticleController {
         article.setJokeId(Objects.toString(jokeId.nextInt()));
         articleService.save(article);
         return Result.success("发布成功");
+    }
+
+
+    @PostMapping("/addlike")
+    public  Result<?> addLike(@RequestParam String jokeid,  @RequestParam String jokeuserid){
+        ArticleLike articleLike = new ArticleLike();
+        articleLike.setJokeId(jokeid);
+        articleLike.setJokeUserId(jokeuserid);
+        articleLike.setApprovalTime(LocalDateTime.now());
+        articleLikeService.save(articleLike);
+        return Result.success("点赞成功");
     }
 }
 
