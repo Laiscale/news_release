@@ -1,5 +1,6 @@
 package com.news_release.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.news_release.common.Result;
 import com.news_release.enity.User;
 import com.news_release.mapper.UserMapper;
@@ -7,15 +8,15 @@ import com.news_release.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Random;
 
 @Slf4j
+@CrossOrigin
 @RestController
 public class AuthController {
 
@@ -49,11 +50,23 @@ public class AuthController {
 
     //注册
     @PostMapping("/register")
-    public Result<?> register(@RequestBody User user) {
+    public Result<?> register(User user) {
+//        QueryWrapper<User> queryWrapper = new QueryWrapper();
+//        queryWrapper.eq("name",user.getName());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRegistTime(LocalDateTime.now());
         userService.save(user);
         return Result.success("注册成功");
+//        Random myRandow = new Random(123456);
+//        user.setUserId(Objects.toString(myRandow.nextInt()));
+//        User use = userMapper.selectOne(queryWrapper);
+//        if(use == null){
+//            userService.save(user);
+//            return Result.success("注册成功");
+//        } else {
+//            return Result.error("0","用户名重复");
+//        }
+
     }
 }

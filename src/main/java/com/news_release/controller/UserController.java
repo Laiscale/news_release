@@ -33,6 +33,7 @@ import java.util.Random;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/user")
 public class UserController {
     @Autowired
