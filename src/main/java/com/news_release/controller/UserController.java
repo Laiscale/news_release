@@ -1,5 +1,6 @@
 package com.news_release.controller;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +34,7 @@ import java.util.Random;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/user")
 public class UserController {
     @Autowired
@@ -52,7 +54,14 @@ public class UserController {
 
 
 
-
+//    // 点赞
+//    @PostMapping("/like")
+//    public Result<?> like(@RequestParam String jokeId){
+//        QueryWrapper<ArticleLike> queryWrapper = new QueryWrapper();
+//        queryWrapper.eq("joke_id", jokeId);
+//        Integer count = articleLikeMapper.selectCount(queryWrapper);
+//        return Result.success();
+//    }
     //用户点赞,用于显示一篇文章的点赞数（不懂是不是这个意思）
     @PostMapping("/userlike")
     public Result<?> userLike(@RequestParam String jokeId) {

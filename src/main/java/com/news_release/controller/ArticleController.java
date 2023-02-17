@@ -3,6 +3,7 @@ package com.news_release.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -26,9 +27,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/article")
 public class ArticleController {
     @Autowired
@@ -79,9 +83,11 @@ public class ArticleController {
 
     //文章发布
     @PostMapping("/release")
-    public Result<?> releaseArticles(@RequestBody Article article){
+    public Result<?> releaseArticles(Article article){
         article.setPostTime(LocalDateTime.now());
         article.setStatus(1);
+        Random jokeId = new Random(123456);
+        article.setJokeId(Objects.toString(jokeId.nextInt()));
         articleService.save(article);
         return Result.success("发布成功");
     }
@@ -98,7 +104,12 @@ public class ArticleController {
         updateWrapper.eq("joke_id",jokeid);
         updateWrapper.setSql("art_like_count=art_like_count+"+1);
         articleMapper.update(null,updateWrapper);
-        return Result.success("点赞成功");
+
+        QueryWrapper<ArticleLike> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("joke_id", jokeid);
+        Integer count = articleLikeMapper.selectCount(queryWrapper);
+        String ss = count.toString();
+        return Result.success(ss);
     }
 
     // 按文章类型查询文章
