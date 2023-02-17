@@ -40,14 +40,12 @@ public class AuthController {
         User user = userMapper.getPasswordByUsername(name);
         boolean flag = encoder.matches(password, user.getPassword());
         user.setLastLoginTime(LocalDateTime.now());
-        map.put(name,user.getName());
-        map.put(password, user.getPassword());
-        String tokenGenerated = JwtUtil.generateToken(map, user.getName());
-//        System.out.println(tokenGenerated);
-        String token = "Bearer " + tokenGenerated;
-        response.setHeader("Authorization", token);
-//        request.getSession().setAttribute("user", user.getId());
         if (flag) {
+            map.put(name,user.getName());
+            map.put(password, user.getPassword());
+            String tokenGenerated = JwtUtil.generateToken(map, user.getName());
+            String token = "Bearer " + tokenGenerated;
+            response.setHeader("Authorization", token);
             return Result.success(user);
         }
         else return Result.error("400", "账户名或密码错误");
