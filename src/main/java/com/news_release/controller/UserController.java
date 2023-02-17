@@ -101,9 +101,9 @@ public class UserController {
         user.setName(name);
         user.setPassword(password);
         user.setNickname(nickname);
-        user.setUserIcon(user_icon);
-        user.setTalk(talk);
-        user.setAddress(address);
+//        user.setUserIcon(user_icon);
+//        user.setTalk(talk);
+//        user.setAddress(address);
         userMapper.update(user,updateWrapper);
         Integer rows = userMapper.update(user, updateWrapper);
         return Result.success(rows);

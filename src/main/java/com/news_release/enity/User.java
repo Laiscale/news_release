@@ -17,10 +17,10 @@ public class User {
     private String nickname;
     private String userId;
     private String role;
-    private String userIcon;
-    private String talk;
-    private String address;
-    private String token;
+//    private String userIcon;
+//    private String talk;
+//    private String address;
+//    private String token;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime registTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
