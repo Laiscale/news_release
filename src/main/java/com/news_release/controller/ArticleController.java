@@ -71,6 +71,15 @@ public class ArticleController {
         articleService.save(article);
         return Result.success("发布成功");
     }
+
+    //首页新闻列表
+    @GetMapping("/getnews")
+    public Result<?> getnews(){
+        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Article::getStatus,3);
+        List<Article> articles = articleMapper.selectList(wrapper);
+        return Result.success(articles);
+    }
 }
 
 
