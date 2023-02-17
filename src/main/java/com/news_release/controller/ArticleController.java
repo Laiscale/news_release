@@ -3,6 +3,7 @@ package com.news_release.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -45,6 +46,15 @@ public class ArticleController {
     @Autowired
     ArticleLikeService articleLikeService;
 
+    //文章详情列表-单篇展示
+    @GetMapping("/jokedetail")
+    public Result<?> jokedetail(@RequestParam String jokeid){
+        LambdaQueryWrapper<Article> wrapper = Wrappers.lambdaQuery();
+        wrapper.like(Article::getJokeId,jokeid);
+        List<Article> articles = articleMapper.selectList(wrapper);
+        return Result.success(articles);
+    }
+
     //文章详情列表展示
     @GetMapping("/jokedetaillist")
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
@@ -84,6 +94,10 @@ public class ArticleController {
         articleLike.setJokeUserId(jokeuserid);
         articleLike.setApprovalTime(LocalDateTime.now());
         articleLikeService.save(articleLike);
+        UpdateWrapper<Article> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("joke_id",jokeid);
+        updateWrapper.setSql("art_like_count=art_like_count+"+1);
+        articleMapper.update(null,updateWrapper);
         return Result.success("点赞成功");
     }
 
