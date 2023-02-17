@@ -52,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()   //首先需要配置哪些请求会被拦截，哪些请求必须具有什么角色才能访问
-                .antMatchers("/static/**", "/logins", "/loginout", "/register","/user/userUpdate","/article/addlike").permitAll()    //静态资源，使用permitAll
+                .antMatchers("/static/**", "/logins", "/loginout", "/register","/user/userUpdate","/article/addlike","/article/jokedetail").permitAll()    //静态资源，使用permitAll
                 // 来运行任何人访问（注意一定要放在前面）
                 .antMatchers("/user/**").hasAnyRole("user", "admin")
                 .antMatchers("/admin/**").hasRole("admin")

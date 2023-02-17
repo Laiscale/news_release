@@ -44,6 +44,15 @@ public class ArticleController {
     @Autowired
     ArticleLikeService articleLikeService;
 
+    //文章详情列表-单篇展示
+    @GetMapping("/jokedetail")
+    public Result<?> jokedetail(@RequestParam String jokeid){
+        LambdaQueryWrapper<Article> wrapper = Wrappers.lambdaQuery();
+        wrapper.like(Article::getJokeId,jokeid);
+        List<Article> articles = articleMapper.selectList(wrapper);
+        return Result.success(articles);
+    }
+
     //文章详情列表展示
     @GetMapping("/jokedetaillist")
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
