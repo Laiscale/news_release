@@ -3,6 +3,7 @@ package com.news_release.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -92,6 +93,10 @@ public class ArticleController {
         articleLike.setJokeUserId(jokeuserid);
         articleLike.setApprovalTime(LocalDateTime.now());
         articleLikeService.save(articleLike);
+        UpdateWrapper<Article> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("joke_id",jokeid);
+        updateWrapper.setSql("art_like_count=art_like_count+"+1);
+        articleMapper.update(null,updateWrapper);
         return Result.success("点赞成功");
     }
 }
