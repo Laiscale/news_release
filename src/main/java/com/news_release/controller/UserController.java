@@ -51,6 +51,9 @@ public class UserController {
     @Autowired(required = false)
     UserService userService;
 
+
+
+
     //用户点赞,用于显示一篇文章的点赞数（不懂是不是这个意思）
     @PostMapping("/userlike")
     public Result<?> userLike(@RequestParam String jokeId) {
@@ -93,20 +96,28 @@ public class UserController {
     }
 
     //用户个人信息修改
+//    @PostMapping("/userUpdate")
+//    public Result<?> userUpdate(@RequestParam int id,@RequestParam String name,@RequestParam String password,@RequestParam String nickname,
+//                                @RequestParam String user_icon,@RequestParam String talk,@RequestParam String address) {
+//        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+//        User user =new User();
+//        updateWrapper.eq("id",id);
+//        user.setName(name);
+//        user.setPassword(password);
+//        user.setNickname(nickname);
+//        user.setUserIcon(user_icon);
+//        user.setTalk(talk);
+//        user.setAddress(address);
+//        userMapper.update(user,updateWrapper);
+//        Integer rows = userMapper.update(user, updateWrapper);
+//        return Result.success(rows);
+//    }
     @PostMapping("/userUpdate")
-    public Result<?> userUpdate(@RequestParam int id,@RequestParam String name,@RequestParam String password,@RequestParam String nickname,
-                                @RequestParam String user_icon,@RequestParam String talk,@RequestParam String address) {
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-        User user =new User();
-        updateWrapper.eq("id",id);
-        user.setName(name);
-        user.setPassword(password);
-        user.setNickname(nickname);
-        user.setUserIcon(user_icon);
-        user.setTalk(talk);
-        user.setAddress(address);
-        userMapper.update(user,updateWrapper);
-        Integer rows = userMapper.update(user, updateWrapper);
+    public Result<?> userUpdate(@RequestBody User user){
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getId,user.getId());
+        userMapper.update(user,wrapper);
+        Integer rows = userMapper.update(user, wrapper);
         return Result.success(rows);
     }
 //    @PostMapping("/userLogin")

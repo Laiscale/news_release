@@ -56,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // 来运行任何人访问（注意一定要放在前面）
                 .antMatchers("/user/**").hasAnyRole("user", "admin")
                 .antMatchers("/admin/**").hasRole("admin")
-                .anyRequest().hasAnyRole("user","admin")     //所有请求必须登陆并且是user,admin角色才可以访问（不包含上面的静态资源）
+                .anyRequest().hasAnyRole()     //所有请求必须登陆并且是user,admin角色才可以访问（不包含上面的静态资源）
                 .and()
                 .formLogin().disable()
                 .logout().disable()
@@ -70,5 +70,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .userDetailsService(userAuthService)  //使用自定义的Service实现类进行验证
                 .passwordEncoder(new BCryptPasswordEncoder());   //依然使用BCryptPasswordEncoder
     }
+
 
 }

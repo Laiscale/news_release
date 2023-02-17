@@ -5,15 +5,21 @@ import com.news_release.common.Result;
 import com.news_release.enity.User;
 import com.news_release.mapper.UserMapper;
 import com.news_release.service.UserService;
+import com.news_release.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @CrossOrigin
@@ -29,12 +35,19 @@ public class AuthController {
     //登录
     @PostMapping("/logins")
     public Result<?> logins(@RequestParam String name, @RequestParam String password,
-                            HttpServletRequest request) {
+                            HttpServletRequest request, HttpServletResponse response) {
+        Map<String,Object> map = new HashMap<>();
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         User user = userMapper.getPasswordByUsername(name);
         boolean flag = encoder.matches(password, user.getPassword());
         user.setLastLoginTime(LocalDateTime.now());
-        request.getSession().setAttribute("user", user.getId());
+        map.put(name,user.getName());
+        map.put(password, user.getPassword());
+        String tokenGenerated = JwtUtil.generateToken(map, user.getName());
+//        System.out.println(tokenGenerated);
+        String token = "Bearer " + tokenGenerated;
+        response.setHeader("Authorization", token);
+//        request.getSession().setAttribute("user", user.getId());
         if (flag) {
             return Result.success(user);
         }
