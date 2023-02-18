@@ -1,10 +1,16 @@
 package com.news_release.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.news_release.common.Result;
 import com.news_release.enity.Article;
 import com.news_release.enity.ArticleComment;
+import com.news_release.enity.ArticleLike;
 import com.news_release.mapper.ArticleCommentMapper;
 import com.news_release.mapper.ArticleLikeMapper;
 import com.news_release.mapper.ArticleMapper;
@@ -18,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 @Slf4j
 @RestController
@@ -43,11 +51,35 @@ public class ArticleCommentController {
     public Result<?> addComment(ArticleComment articleComment){
             Date date = new Date();
             articleComment.setCommentDate(date);
-            articleComment.setCommentId("2");
+            Random  random = new Random(123456);
+            articleComment.setCommentId(Objects.toString(random.nextInt()));
             articleCommentMapper.insert(articleComment);
+
+            UpdateWrapper<Article> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("joke_id",articleComment.getJokeId());
+            updateWrapper.setSql("art_comment_count=art_comment_count+"+1);
+            articleMapper.update(null,updateWrapper);
             return Result.success(articleComment);
     }
 
+    @GetMapping("/commentList")
+    public Result<?> getCommentList(@RequestParam(defaultValue = "1") Integer page,
+                                    @RequestParam(defaultValue = "10") Integer row,
+                                    @RequestParam String jokeId){
+        LambdaQueryWrapper<ArticleComment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(ArticleComment::getJokeId, jokeId);
+        IPage<ArticleComment> commentDetailIPage = articleCommentMapper.selectPage(new Page<>(page, row), wrapper);
+        return Result.success(commentDetailIPage);
+    }
+    @GetMapping("/commentCount")
+    public Result<?> getCommentCount(@RequestParam String jokeId) {
+
+        QueryWrapper<ArticleComment> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("joke_id", jokeId);
+        Integer count = articleCommentMapper.selectCount(queryWrapper);
+        String ss = count.toString();
+        return Result.success(ss);
+    }
     //根据文章id拿到每篇文章的评论
     @GetMapping("/comment")
     public Result<?> comments(@RequestParam long joke_id) {

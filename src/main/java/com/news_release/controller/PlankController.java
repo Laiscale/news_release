@@ -15,6 +15,7 @@ import java.util.Random;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/plank")
 public class PlankController {
 
@@ -24,7 +25,7 @@ public class PlankController {
     @Autowired
     PlankMapper plankMapper;
     //发布公告
-    @PostMapping("/post")
+    @PostMapping("/postPlank")
     public Result<?> post(@RequestParam String content) {
         Plank plank = new Plank();
         plank.setContent(content);
@@ -39,12 +40,17 @@ public class PlankController {
     }
 
     //公告展示
-    @GetMapping("get")
+    @GetMapping("/getPlank")
     public Result<?> get() {
         List<Plank> plankList = plankService.list();
         return Result.success(plankList);
     }
-
+    @GetMapping("/getLatestPlank")
+    public Result<?> getLatestPlank(){
+        List<Plank> plankList = plankService.list();
+        Integer length = plankList.size();
+        return Result.success(plankList.get(length-1));
+    }
     // 删除公告
     @DeleteMapping("delete")
     public Result<?> delete(@RequestParam Number id) {

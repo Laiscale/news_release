@@ -61,7 +61,7 @@ public class AuthController {
 
     //注册
     @PostMapping("/register")
-    public Result<?> register(@RequestBody User user) {
+    public Result<?> register(User user) {
 //        QueryWrapper<User> queryWrapper = new QueryWrapper();
 //        queryWrapper.eq("name",user.getName());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
