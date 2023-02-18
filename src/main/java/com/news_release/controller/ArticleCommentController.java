@@ -49,8 +49,8 @@ public class ArticleCommentController {
     }
 
     //根据文章id拿到每篇文章的评论
-    @GetMapping("/comment/{joke_id}")
-    public Result<?> comments(@PathVariable long joke_id) {
+    @GetMapping("/comment")
+    public Result<?> comments(@RequestParam long joke_id) {
         LambdaQueryWrapper<ArticleComment> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ArticleComment::getJokeId, joke_id);
         List<ArticleComment> articleComment = articleCommentMapper.selectList(wrapper);

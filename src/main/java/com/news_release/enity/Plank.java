@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @TableName("plank")
 public class Plank {
-//    private Integer id;
+    private Integer plankId;
     private String content;
     private LocalDateTime sendTime;
 }
