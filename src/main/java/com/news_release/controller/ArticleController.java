@@ -83,7 +83,7 @@ public class ArticleController {
 
     //文章发布
     @PostMapping("/release")
-    public Result<?> releaseArticles(Article article){
+    public Result<?> releaseArticles(@RequestBody Article article){
         article.setPostTime(LocalDateTime.now());
         article.setStatus(1);
         Random jokeId = new Random(123456);

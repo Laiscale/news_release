@@ -61,12 +61,14 @@ public class AuthController {
 
     //注册
     @PostMapping("/register")
-    public Result<?> register(User user) {
+    public Result<?> register(@RequestBody User user) {
 //        QueryWrapper<User> queryWrapper = new QueryWrapper();
 //        queryWrapper.eq("name",user.getName());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRegistTime(LocalDateTime.now());
+        Random r = new Random();
+        user.setUserId(String.valueOf(r.nextInt(10000)));
         userService.save(user);
         return Result.success("注册成功");
 //        Random myRandow = new Random(123456);
