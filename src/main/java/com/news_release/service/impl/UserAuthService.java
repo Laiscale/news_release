@@ -15,8 +15,8 @@ public class UserAuthService implements UserDetailsService {
     UserMapper userMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userMapper.getPasswordByUsername(username);
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        User user = userMapper.getPasswordByUsername(name);
         if (user == null) {
             throw new UsernameNotFoundException("登录失败，用户名或密码错误！");
         }

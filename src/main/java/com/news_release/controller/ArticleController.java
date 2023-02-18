@@ -21,6 +21,7 @@ import com.news_release.service.ArticleLikeService;
 import com.news_release.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -109,6 +110,15 @@ public class ArticleController {
         Integer count = articleLikeMapper.selectCount(queryWrapper);
         String ss = count.toString();
         return Result.success(ss);
+    }
+
+    // 按文章类型查询文章
+    @GetMapping("/searchWithCategory")
+    @PreAuthorize("hasRole('user')")
+    public  Result<?> searchWithCategory(@RequestParam String category){
+        System.out.println(category);
+        List<Article> article = articleMapper.selectArticleWithCategory(category);
+        return Result.success(article);
     }
 }
 

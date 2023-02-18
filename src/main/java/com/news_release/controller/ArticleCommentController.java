@@ -76,5 +76,12 @@ public class ArticleCommentController {
         Integer count = articleCommentMapper.selectCount(queryWrapper);
         String ss = count.toString();
         return Result.success(ss);
+    //根据文章id拿到每篇文章的评论
+    @GetMapping("/comment/{joke_id}")
+    public Result<?> comments(@PathVariable long joke_id) {
+        LambdaQueryWrapper<ArticleComment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ArticleComment::getJokeId, joke_id);
+        List<ArticleComment> articleComment = articleCommentMapper.selectList(wrapper);
+        return Result.success(articleComment);
     }
 }
