@@ -2,6 +2,7 @@ package com.news_release.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -96,19 +97,45 @@ public class AdminController {
         return Result.success(PageStatus);
     }
 
+    @GetMapping("/articleListper")
+    public Result<?> articleListper(@RequestParam(defaultValue = "1") Integer pageNum,
+                                 @RequestParam(defaultValue = "5") Integer pageSize,
+                                 @RequestParam(defaultValue = "") String search) {
+//        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+//        wrapper.like(search != null, Article::getTitle, search);
+//        Page<Article> articlePage = articleMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        IPage<Article> PageStatus = articleService.findPerByStatus(pageNum, pageSize, search);
+        return Result.success(PageStatus);
+    }
+
+    @GetMapping("/articleListdny")
+    public Result<?> articleListdny(@RequestParam(defaultValue = "1") Integer pageNum,
+                                 @RequestParam(defaultValue = "5") Integer pageSize,
+                                 @RequestParam(defaultValue = "") String search) {
+//        LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+//        wrapper.like(search != null, Article::getTitle, search);
+//        Page<Article> articlePage = articleMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        IPage<Article> PageStatus = articleService.findDnyByStatus(pageNum, pageSize, search);
+        return Result.success(PageStatus);
+    }
+
     //文章审核通过
-    @PostMapping("/permit/{id}")
-    public Result<?> permitpage(@PathVariable int id) {
-        Article article = articleService.getById(id);
+    @PostMapping("/permit")
+    public Result<?> permitpage(@RequestParam long joke_id) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("joke_id",joke_id);
+        Article article = articleService.getOne(queryWrapper);
         article.setStatus(2);
         boolean flag = articleService.updateById(article);
         return Result.success(flag);
     }
 
     //文章审核否决
-    @PostMapping("/deny/{id}")
-    public Result<?> denypage(@PathVariable int id) {
-        Article article = articleService.getById(id);
+    @PostMapping("/deny")
+    public Result<?> denypage(@RequestParam long joke_id) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("joke_id",joke_id);
+        Article article = articleService.getOne(queryWrapper);
         article.setStatus(3);
         boolean flag = articleService.updateById(article);
         return Result.success(flag);

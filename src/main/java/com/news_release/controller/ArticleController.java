@@ -86,8 +86,8 @@ public class ArticleController {
     public Result<?> releaseArticles(@RequestBody Article article){
         article.setPostTime(LocalDateTime.now());
         article.setStatus(1);
-        Random jokeId = new Random(123456);
-        article.setJokeId(Objects.toString(jokeId.nextInt()));
+        Random jokeId = new Random();
+        article.setJokeId(Objects.toString(jokeId.nextInt(10000)));
         articleService.save(article);
         return Result.success("发布成功");
     }
@@ -116,7 +116,6 @@ public class ArticleController {
     @GetMapping("/searchWithCategory")
     @PreAuthorize("hasRole('user')")
     public  Result<?> searchWithCategory(@RequestParam String category){
-        System.out.println(category);
         List<Article> article = articleMapper.selectArticleWithCategory(category);
         return Result.success(article);
     }

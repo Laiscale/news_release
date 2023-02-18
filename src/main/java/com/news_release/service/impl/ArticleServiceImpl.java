@@ -31,4 +31,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         IPage<Article> PageStatus = articleMapper.selectPage(page, queryWrapper);
         return PageStatus;
     }
+
+    @Override
+    public IPage<Article> findPerByStatus(Integer pageNum, Integer pageSize, String search) {
+        IPage<Article> page = new Page<>(pageNum, pageSize);
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getStatus, 3);
+        List<Article> checkarticle = articleMapper.selectList(queryWrapper);
+        System.out.println(checkarticle);
+        page.setRecords(checkarticle);
+        queryWrapper.like(search != null, Article::getTitle, search);
+        IPage<Article> PageStatuss = articleMapper.selectPage(page, queryWrapper);
+        return PageStatuss;
+    }
+
+    @Override
+    public IPage<Article> findDnyByStatus(Integer pageNum, Integer pageSize, String search) {
+        IPage<Article> page = new Page<>(pageNum, pageSize);
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getStatus, 2);
+        List<Article> nocheckarticle = articleMapper.selectList(queryWrapper);
+        System.out.println(nocheckarticle);
+        page.setRecords(nocheckarticle);
+        queryWrapper.like(search != null, Article::getTitle, search);
+        IPage<Article> PageStatu = articleMapper.selectPage(page, queryWrapper);
+        return PageStatu;
+    }
 }

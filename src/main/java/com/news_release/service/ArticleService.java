@@ -6,4 +6,6 @@ import com.news_release.enity.Article;
 
 public interface ArticleService extends IService<Article> {
     IPage<Article> findAllByStatus(Integer pageNum, Integer pageSize, String search);
+    IPage<Article> findPerByStatus(Integer pageNum, Integer pageSize, String search);
+    IPage<Article> findDnyByStatus(Integer pageNum, Integer pageSize, String search);
 }
