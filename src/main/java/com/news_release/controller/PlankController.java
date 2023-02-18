@@ -13,6 +13,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/plank")
 public class PlankController {
 
@@ -22,8 +23,8 @@ public class PlankController {
     @Autowired
     PlankMapper plankMapper;
     //发布公告
-    @PostMapping("/post")
-    public Result<?> post(@RequestBody Plank plank) {
+    @PostMapping("/postPlank")
+    public Result<?> post(Plank plank) {
         plank.setSendTime(LocalDateTime.now());
         if(plank == null) {
             return Result.error("400", "发布失败");
@@ -33,9 +34,15 @@ public class PlankController {
     }
 
     //公告展示
-    @GetMapping("get")
+    @GetMapping("/getPlank")
     public Result<?> get() {
         List<Plank> plankList = plankService.list();
         return Result.success(plankList);
+    }
+    @GetMapping("/getLatestPlank")
+    public Result<?> getLatestPlank(){
+        List<Plank> plankList = plankService.list();
+        Integer length = plankList.size();
+        return Result.success(plankList.get(length-1));
     }
 }
