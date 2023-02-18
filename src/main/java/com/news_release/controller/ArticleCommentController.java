@@ -1,7 +1,9 @@
 package com.news_release.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.news_release.common.Result;
+import com.news_release.enity.Article;
 import com.news_release.enity.ArticleComment;
 import com.news_release.mapper.ArticleCommentMapper;
 import com.news_release.mapper.ArticleLikeMapper;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -43,5 +46,14 @@ public class ArticleCommentController {
             articleComment.setCommentId("2");
             articleCommentMapper.insert(articleComment);
             return Result.success(articleComment);
+    }
+
+    //根据文章id拿到每篇文章的评论
+    @GetMapping("/comment/{joke_id}")
+    public Result<?> comments(@PathVariable long joke_id) {
+        LambdaQueryWrapper<ArticleComment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ArticleComment::getJokeId, joke_id);
+        List<ArticleComment> articleComment = articleCommentMapper.selectList(wrapper);
+        return Result.success(articleComment);
     }
 }

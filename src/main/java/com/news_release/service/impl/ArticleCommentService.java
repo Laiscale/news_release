@@ -1,6 +1,5 @@
 package com.news_release.service.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.news_release.enity.ArticleComment;
 import com.news_release.mapper.ArticleCommentMapper;
