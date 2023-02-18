@@ -1,6 +1,7 @@
 package com.news_release.controller;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.extension.api.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -155,6 +156,20 @@ public class UserController {
         user.setIsLogin(0);
         userMapper.update(user,updateWrapper);
         return Result.success("退出登录成功");
+    }
+    @GetMapping("/userSelf")
+    public Result<?> getUserInfo(@RequestParam(defaultValue = "1") Integer page,
+                                 @RequestParam(defaultValue = "10") Integer pageRow,
+                                 @RequestParam String userId){
+        LambdaQueryWrapper<Article> wrapper = Wrappers.lambdaQuery();
+        wrapper.like(Article::getJokeUserId,userId);
+        IPage<Article> articleDetailIPage = articleMapper.selectPage(new Page<>(page, pageRow), wrapper);
+        return Result.success(articleDetailIPage);
+    }
+    @GetMapping("/thumb")
+    public Result<?> getTargetUserInfo(@RequestParam String userId){
+        List<Article> list = userMapper.getTargetUserInfo(userId);
+        return Result.success(list);
     }
 //    @PostMapping("/userRegistered")
 //    public Result<?> userRegistered(@RequestParam String name,

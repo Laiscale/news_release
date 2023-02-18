@@ -83,7 +83,7 @@ public class ArticleController {
 
     //文章发布
     @PostMapping("/release")
-    public Result<?> releaseArticles(@RequestBody Article article){
+    public Result<?> releaseArticles(Article article){
         article.setPostTime(LocalDateTime.now());
         article.setStatus(1);
         Random jokeId = new Random(123456);
@@ -91,7 +91,6 @@ public class ArticleController {
         articleService.save(article);
         return Result.success("发布成功");
     }
-
 
     @PostMapping("/addlike")
     public  Result<?> addLike(@RequestParam String jokeid,  @RequestParam String jokeuserid){
@@ -116,7 +115,6 @@ public class ArticleController {
     @GetMapping("/searchWithCategory")
     @PreAuthorize("hasRole('user')")
     public  Result<?> searchWithCategory(@RequestParam String category){
-        System.out.println(category);
         List<Article> article = articleMapper.selectArticleWithCategory(category);
         return Result.success(article);
     }
